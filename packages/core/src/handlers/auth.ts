@@ -6,6 +6,9 @@ import type { CoreRuntime } from '../utils/runtime.js';
 import { requiredCapability, requiredString } from '../utils/validation.js';
 
 
+const requestOrigin = (ctx: WalineContext): string | undefined =>
+  ctx.origin || ctx.serverUrl || undefined;
+
 const parsePasskeys = (raw: unknown): PasskeyCredential[] => {
   if (!raw) return [];
   try {
@@ -141,6 +144,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
           userName: user.email,
           displayName: user.display_name || user.email,
           excludeCredentialIds: parsePasskeys(account?.passkey).map(({ id }) => id),
+          origin: requestOrigin(ctx),
         });
       } catch {
         throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
@@ -159,6 +163,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
           credential: input.credential,
           state: requiredString(input.state, 'state'),
           userId: String(user.objectId),
+          origin: requestOrigin(ctx),
         });
       } catch {
         throw new WalineError('PASSKEY_REGISTER_FAILED', 400);
@@ -177,7 +182,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
       return { ok: true };
     },
 
-    async getPasskeyAuthOptions(input: { email?: string }, _ctx: WalineContext) {
+    async getPasskeyAuthOptions(input: { email?: string }, ctx: WalineContext) {
       const passkey = requiredCapability(services.passkey, 'passkey');
       const email = typeof input.email === 'string' && input.email ? input.email : undefined;
       if (email) {
@@ -190,6 +195,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
           return await passkey.getAuthenticationOptions({
             allowCredentialIds: list.map(({ id }) => id),
             email,
+            origin: requestOrigin(ctx),
           });
         } catch {
           throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
@@ -197,7 +203,10 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
       }
       // usernameless: the browser shows an account picker instead
       try {
-        return await passkey.getAuthenticationOptions({ allowCredentialIds: [] });
+        return await passkey.getAuthenticationOptions({
+          allowCredentialIds: [],
+          origin: requestOrigin(ctx),
+        });
       } catch {
         throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
       }
@@ -208,7 +217,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
         state: string;
         credential: { id: string; response?: { userHandle?: string } } & Record<string, unknown>;
       },
-      _ctx: WalineContext,
+      ctx: WalineContext,
     ) {
       const passkey = requiredCapability(services.passkey, 'passkey');
       const tokenService = requiredCapability(services.token, 'token');
@@ -252,6 +261,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
           credential,
           challenge,
           storedCredential: stored,
+          origin: requestOrigin(ctx),
         });
       } catch {
         throw new WalineError('PASSKEY_VERIFY_FAILED', 400);

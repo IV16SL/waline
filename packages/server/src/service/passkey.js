@@ -12,8 +12,10 @@ const CHALLENGE_TTL_MS = 5 * 60 * 1000;
 
 const b64u = (buf) => Buffer.from(buf).toString('base64url');
 
-function getRpConfig() {
-  const siteUrl = process.env.SITE_URL || '';
+function getRpConfig(fallbackOrigin = '') {
+  // PASSKEY_* env > SITE_URL > requesting origin (WebAuthn requires rpID to
+  // match the domain the browser is on, so the request origin is a valid fallback)
+  const siteUrl = process.env.SITE_URL || fallbackOrigin || '';
   let hostname = '';
   try {
     hostname = siteUrl ? new URL(siteUrl).hostname : '';
@@ -77,8 +79,8 @@ module.exports = function createPasskeyService({ jwtKey }) {
   };
 
   return {
-    async getRegistrationOptions({ userId, userName, displayName, excludeCredentialIds }) {
-      const { rpID, rpName, origin } = getRpConfig();
+    async getRegistrationOptions({ userId, userName, displayName, excludeCredentialIds, origin: reqOrigin }) {
+      const { rpID, rpName, origin } = getRpConfig(reqOrigin);
       assertRpConfig({ rpID, origin });
       const options = await generateRegistrationOptions({
         rpName,
@@ -93,8 +95,8 @@ module.exports = function createPasskeyService({ jwtKey }) {
       return { options, state: seal({ action: 'register', userId, challenge: options.challenge }) };
     },
 
-    async verifyRegistration({ credential, state, userId }) {
-      const { rpID, origin } = getRpConfig();
+    async verifyRegistration({ credential, state, userId, origin: reqOrigin }) {
+      const { rpID, origin } = getRpConfig(reqOrigin);
       assertRpConfig({ rpID, origin });
       const { challenge, userId: sealedUserId } = unseal(state, 'register');
       if (String(sealedUserId) !== String(userId)) throw new Error('PASSKEY_BAD_CHALLENGE');
@@ -116,8 +118,8 @@ module.exports = function createPasskeyService({ jwtKey }) {
       };
     },
 
-    async getAuthenticationOptions({ allowCredentialIds, email }) {
-      const { rpID, origin } = getRpConfig();
+    async getAuthenticationOptions({ allowCredentialIds, email, origin: reqOrigin }) {
+      const { rpID, origin } = getRpConfig(reqOrigin);
       assertRpConfig({ rpID, origin });
       const options = await generateAuthenticationOptions({
         rpID,
@@ -141,8 +143,8 @@ module.exports = function createPasskeyService({ jwtKey }) {
       return Buffer.from(userHandle, 'base64url').toString('utf8');
     },
 
-    async verifyAuthentication({ credential, challenge, storedCredential }) {
-      const { rpID, origin } = getRpConfig();
+    async verifyAuthentication({ credential, challenge, storedCredential, origin: reqOrigin }) {
+      const { rpID, origin } = getRpConfig(reqOrigin);
       assertRpConfig({ rpID, origin });
       const { verified, authenticationInfo } = await verifyAuthenticationResponse({
         response: credential,

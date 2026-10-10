@@ -160,15 +160,18 @@ export interface WalineServices {
       userName: string;
       displayName?: string;
       excludeCredentialIds: string[];
+      origin?: string;
     }): Promise<{ options: unknown; state: string }>;
     verifyRegistration(input: {
       credential: unknown;
       state: string;
       userId: string;
+      origin?: string;
     }): Promise<PasskeyCredential>;
     getAuthenticationOptions(input: {
       allowCredentialIds: string[];
       email?: string;
+      origin?: string;
     }): Promise<{ options: unknown; state: string }>;
     peekAuthState(state: string): Promise<{ challenge: string; email?: string }>;
     decodeUserHandle(userHandle: string): Promise<string>;
@@ -176,6 +179,7 @@ export interface WalineServices {
       credential: unknown;
       challenge: string;
       storedCredential: PasskeyCredential;
+      origin?: string;
     }): Promise<number>;
   };
   captcha?: { verify(input: unknown, ctx: WalineContext): Promise<boolean> };
