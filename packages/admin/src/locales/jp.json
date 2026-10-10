@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "パスキー",
+  "passkey login": "パスキーでログイン",
+  "passkey login failed": "パスキーでのログインに失敗しました",
+  "register passkey": "パスキーを登録",
+  "no passkey registered": "パスキーが登録されていません",
+  "confirm remove passkey": "このパスキーを削除しますか？",
+  "remove passkey": "削除",
+  "name this passkey": "このパスキーに名前を付ける"
 }

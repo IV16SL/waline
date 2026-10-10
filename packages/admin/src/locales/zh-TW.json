@@ -104,5 +104,13 @@
   "avatar": "頭像",
   "select": "選擇",
   "select item": "選擇項目",
-  "unbind": "解除綁定"
+  "unbind": "解除綁定",
+  "passkey": "通行密鑰",
+  "passkey login": "使用通行密鑰登入",
+  "passkey login failed": "通行密鑰登入失敗",
+  "register passkey": "註冊通行密鑰",
+  "no passkey registered": "尚未註冊通行密鑰",
+  "confirm remove passkey": "確定要移除這個通行密鑰嗎？",
+  "remove passkey": "移除",
+  "name this passkey": "為這個通行密鑰命名"
 }

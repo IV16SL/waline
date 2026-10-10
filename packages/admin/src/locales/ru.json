@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "Ключ доступа",
+  "passkey login": "Войти с помощью ключа доступа",
+  "passkey login failed": "Не удалось войти с помощью ключа доступа",
+  "register passkey": "Зарегистрировать ключ доступа",
+  "no passkey registered": "Ключи доступа не зарегистрированы",
+  "confirm remove passkey": "Удалить этот ключ доступа?",
+  "remove passkey": "Удалить",
+  "name this passkey": "Назовите этот ключ доступа"
 }

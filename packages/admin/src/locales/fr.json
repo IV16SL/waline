@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "Clé d'accès",
+  "passkey login": "Se connecter avec une clé d'accès",
+  "passkey login failed": "Échec de la connexion avec la clé d'accès",
+  "register passkey": "Enregistrer une clé d'accès",
+  "no passkey registered": "Aucune clé d'accès enregistrée",
+  "confirm remove passkey": "Supprimer cette clé d'accès ?",
+  "remove passkey": "Supprimer",
+  "name this passkey": "Nommer cette clé d'accès"
 }

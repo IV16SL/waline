@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "Khóa truy cập",
+  "passkey login": "Đăng nhập bằng khóa truy cập",
+  "passkey login failed": "Đăng nhập bằng khóa truy cập thất bại",
+  "register passkey": "Đăng ký khóa truy cập",
+  "no passkey registered": "Chưa có khóa truy cập nào được đăng ký",
+  "confirm remove passkey": "Xóa khóa truy cập này?",
+  "remove passkey": "Xóa",
+  "name this passkey": "Đặt tên cho khóa truy cập này"
 }

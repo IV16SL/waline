@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "패스키",
+  "passkey login": "패스키로 로그인",
+  "passkey login failed": "패스키 로그인에 실패했습니다",
+  "register passkey": "패스키 등록",
+  "no passkey registered": "등록된 패스키가 없습니다",
+  "confirm remove passkey": "이 패스키를 삭제하시겠습니까?",
+  "remove passkey": "삭제",
+  "name this passkey": "이 패스키의 이름 입력"
 }

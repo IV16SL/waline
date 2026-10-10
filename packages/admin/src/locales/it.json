@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "Passkey",
+  "passkey login": "Accedi con passkey",
+  "passkey login failed": "Accesso con passkey non riuscito",
+  "register passkey": "Registra passkey",
+  "no passkey registered": "Nessuna passkey registrata",
+  "confirm remove passkey": "Rimuovere questa passkey?",
+  "remove passkey": "Rimuovi",
+  "name this passkey": "Dai un nome a questa passkey"
 }

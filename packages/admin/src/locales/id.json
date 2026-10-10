@@ -104,5 +104,13 @@
   "avatar": "Avatar",
   "select": "Select",
   "select item": "Select item",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "passkey": "Kunci sandi",
+  "passkey login": "Masuk dengan kunci sandi",
+  "passkey login failed": "Gagal masuk dengan kunci sandi",
+  "register passkey": "Daftarkan kunci sandi",
+  "no passkey registered": "Belum ada kunci sandi yang terdaftar",
+  "confirm remove passkey": "Hapus kunci sandi ini?",
+  "remove passkey": "Hapus",
+  "name this passkey": "Beri nama kunci sandi ini"
 }
