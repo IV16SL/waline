@@ -833,7 +833,7 @@ button.operate-button-delete:hover {
 }
 
 .account-item.github path,
-.account-item.twitter circle,
+.account-item.twitter path,
 .account-item.facebook path,
 .account-item.weibo circle,
 .account-item.qq path,
@@ -847,9 +847,9 @@ button.operate-button-delete:hover {
   fill: #1b1f23;
 }
 
-.account-item.twitter:hover circle,
-.account-item.twitter.bind circle {
-  fill: #2daae1;
+.account-item.twitter:hover path,
+.account-item.twitter.bind path {
+  fill: #000;
 }
 
 .account-item.facebook:hover path,
