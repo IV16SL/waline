@@ -4,6 +4,7 @@ const parser = require('ua-parser-js');
 
 const { createWalineCore } = require('@waline/core');
 const { getMarkdownParser } = require('./markdown/index.js');
+const createPasskeyService = require('./passkey.js');
 
 module.exports = class extends think.Service {
   create(controller) {
@@ -50,6 +51,7 @@ module.exports = class extends think.Service {
           hash: async (value) => controller.hashPassword(value),
           verify: async (value, hash) => controller.checkPassword(value, hash),
         },
+        passkey: createPasskeyService({ jwtKey: controller.config('jwtKey') }),
         twoFactor: {
           create: async (email) => {
             const secret = speakeasy.generateSecret({

@@ -27,3 +27,24 @@ export const getUserInfo = () =>
     logout();
     Promise.reject(new Error('get userinfo failed'));
   });
+
+export const getPasskeyRegisterOptions = () =>
+  request({ url: 'token/passkey?action=register-options', method: 'GET' });
+
+export const registerPasskey = (data) =>
+  request({ url: 'token/passkey', method: 'POST', body: { action: 'register', ...data } });
+
+export const getPasskeyAuthOptions = (email) =>
+  request({
+    url: `token/passkey?action=auth-options&email=${encodeURIComponent(email)}`,
+    method: 'GET',
+  });
+
+export const verifyPasskeyLogin = (data) =>
+  request({ url: 'token/passkey', method: 'POST', body: { action: 'verify', ...data } });
+
+export const getPasskeys = () =>
+  request({ url: 'token/passkey?action=status', method: 'GET' });
+
+export const removePasskey = (id) =>
+  request({ url: 'token/passkey', method: 'POST', body: { action: 'remove', id } });

@@ -130,6 +130,17 @@ export interface WalineConfig {
   storage?: string;
 }
 
+export interface PasskeyCredential {
+  id: string;
+  publicKey: string;
+  counter: number;
+  deviceType: string;
+  backedUp: boolean;
+  transports?: string[];
+  name?: string;
+  createdAt?: string;
+}
+
 export interface WalineServices {
   token?: {
     sign(subject: string): Promise<string> | string;
@@ -142,6 +153,29 @@ export interface WalineServices {
   twoFactor?: {
     create(email?: string): Promise<{ secret: string; otpauth_url: string }>;
     verify(secret: string, code: string): Promise<boolean>;
+  };
+  passkey?: {
+    getRegistrationOptions(input: {
+      userId: string;
+      userName: string;
+      displayName?: string;
+      excludeCredentialIds: string[];
+    }): Promise<{ options: unknown; state: string }>;
+    verifyRegistration(input: {
+      credential: unknown;
+      state: string;
+      userId: string;
+    }): Promise<PasskeyCredential>;
+    getAuthenticationOptions(input: {
+      allowCredentialIds: string[];
+      email: string;
+    }): Promise<{ options: unknown; state: string }>;
+    peekAuthState(state: string): Promise<{ challenge: string; email: string }>;
+    verifyAuthentication(input: {
+      credential: unknown;
+      challenge: string;
+      storedCredential: PasskeyCredential;
+    }): Promise<number>;
   };
   captcha?: { verify(input: unknown, ctx: WalineContext): Promise<boolean> };
   spam?: { check(comment: Partial<WalineComment>, ctx: WalineContext): Promise<boolean> };

@@ -70,5 +70,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@simplewebauthn/browser": "14.0.0"
   }
 }

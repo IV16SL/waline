@@ -104,5 +104,12 @@
   "avatar": "头像",
   "select": "选择",
   "select item": "选择项目",
-  "unbind": "解绑"
+  "unbind": "解绑",
+  "passkey": "通行密钥",
+  "passkey login": "使用通行密钥登录",
+  "passkey login failed": "通行密钥登录失败",
+  "register passkey": "注册通行密钥",
+  "no passkey registered": "尚未注册通行密钥",
+  "confirm remove passkey": "确定删除这个通行密钥？",
+  "remove passkey": "删除"
 }

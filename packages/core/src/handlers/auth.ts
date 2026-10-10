@@ -1,9 +1,24 @@
 import { unauthorized, WalineError } from '../error.js';
-import type { WalineContext } from '../types.js';
+import type { PasskeyCredential, WalineContext } from '../types.js';
 import { currentUser, requireUser } from '../utils/auth.js';
 import { createAvatarFormatter } from '../utils/avatar.js';
 import type { CoreRuntime } from '../utils/runtime.js';
 import { requiredCapability, requiredString } from '../utils/validation.js';
+
+
+const parsePasskeys = (raw: unknown): PasskeyCredential[] => {
+  if (!raw) return [];
+  try {
+    const list = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (!Array.isArray(list)) return [];
+    return list.filter(
+      (item): item is PasskeyCredential =>
+        !!item && typeof item === 'object' && typeof (item as { id?: unknown }).id === 'string',
+    );
+  } catch {
+    return [];
+  }
+};
 
 export const createAuthHandler = (runtime: CoreRuntime) => {
   const { models, services } = runtime;
@@ -111,6 +126,149 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
       }
 
       await models.Users.update({ '2fa': input.secret }, { objectId: user.objectId });
+    },
+
+    async getPasskeyRegisterOptions(_input: object, ctx: WalineContext) {
+      const user = requireUser(ctx);
+      const passkey = requiredCapability(services.passkey, 'passkey');
+      const [account] = await models.Users.select(
+        { objectId: user.objectId },
+        { field: ['passkey'] },
+      );
+      try {
+        return await passkey.getRegistrationOptions({
+          userId: String(user.objectId),
+          userName: user.email,
+          displayName: user.display_name || user.email,
+          excludeCredentialIds: parsePasskeys(account?.passkey).map(({ id }) => id),
+        });
+      } catch {
+        throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
+      }
+    },
+
+    async verifyPasskeyRegistration(
+      input: { state: string; credential: unknown },
+      ctx: WalineContext,
+    ) {
+      const user = requireUser(ctx);
+      const passkey = requiredCapability(services.passkey, 'passkey');
+      let record: PasskeyCredential;
+      try {
+        record = await passkey.verifyRegistration({
+          credential: input.credential,
+          state: requiredString(input.state, 'state'),
+          userId: String(user.objectId),
+        });
+      } catch {
+        throw new WalineError('PASSKEY_REGISTER_FAILED', 400);
+      }
+      const [account] = await models.Users.select(
+        { objectId: user.objectId },
+        { field: ['passkey'] },
+      );
+      const list = parsePasskeys(account?.passkey).filter(({ id }) => id !== record.id);
+      list.push({
+        ...record,
+        name: 'Passkey ' + (list.length + 1),
+        createdAt: new Date().toISOString(),
+      });
+      await models.Users.update({ passkey: JSON.stringify(list) }, { objectId: user.objectId });
+      return { ok: true };
+    },
+
+    async getPasskeyAuthOptions(input: { email: string }, _ctx: WalineContext) {
+      const email = requiredString(input.email, 'email');
+      const passkey = requiredCapability(services.passkey, 'passkey');
+      const [account] = await models.Users.select({ email }, { field: ['passkey'] });
+      const list = parsePasskeys(account?.passkey);
+      if (!account || list.length === 0) {
+        throw new WalineError('PASSKEY_NOT_REGISTERED', 400);
+      }
+      try {
+        return await passkey.getAuthenticationOptions({
+          allowCredentialIds: list.map(({ id }) => id),
+          email,
+        });
+      } catch {
+        throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
+      }
+    },
+
+    async verifyPasskeyLogin(
+      input: { state: string; credential: { id: string } & Record<string, unknown> },
+      _ctx: WalineContext,
+    ) {
+      const passkey = requiredCapability(services.passkey, 'passkey');
+      const tokenService = requiredCapability(services.token, 'token');
+      const credential = input.credential;
+      if (!credential || typeof credential.id !== 'string') {
+        throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
+      }
+      let challenge: string;
+      let email: string;
+      try {
+        ({ challenge, email } = await passkey.peekAuthState(requiredString(input.state, 'state')));
+      } catch {
+        throw new WalineError('PASSKEY_CHALLENGE_INVALID', 400);
+      }
+      const [account] = await models.Users.select({ email });
+      if (!account || account.type.startsWith('verify:') || account.type === 'banned') {
+        throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
+      }
+      const list = parsePasskeys(account.passkey);
+      const stored = list.find(({ id }) => id === credential.id);
+      if (!stored) {
+        throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
+      }
+      try {
+        stored.counter = await passkey.verifyAuthentication({
+          credential,
+          challenge,
+          storedCredential: stored,
+        });
+      } catch {
+        throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
+      }
+      await models.Users.update({ passkey: JSON.stringify(list) }, { objectId: account.objectId });
+      return {
+        ...account,
+        password: undefined,
+        passkey: undefined,
+        avatar: await avatar(account),
+        token: await tokenService.sign(account.objectId),
+      };
+    },
+
+    async getPasskeys(_input: object, ctx: WalineContext) {
+      const user = requireUser(ctx);
+      const [account] = await models.Users.select(
+        { objectId: user.objectId },
+        { field: ['passkey'] },
+      );
+      return {
+        passkeys: parsePasskeys(account?.passkey).map(
+          ({ id, name, createdAt, deviceType, backedUp }) => ({
+            id,
+            name,
+            createdAt,
+            deviceType,
+            backedUp,
+          }),
+        ),
+      };
+    },
+
+    async removePasskey(input: { id: string }, ctx: WalineContext) {
+      const user = requireUser(ctx);
+      const id = requiredString(input.id, 'id');
+      const [account] = await models.Users.select(
+        { objectId: user.objectId },
+        { field: ['passkey'] },
+      );
+      const list = parsePasskeys(account?.passkey).filter((item) => item.id !== id);
+      await models.Users.update({ passkey: JSON.stringify(list) }, { objectId: user.objectId });
+      return { ok: true };
     },
 
     async requestPasswordReset(input: { email: string }, ctx: WalineContext) {

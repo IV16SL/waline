@@ -52,6 +52,21 @@ export const user = {
 
       return dispatch.user.setUser(user);
     },
+    async loginWithPasskey({ token, user, remember }) {
+      if (token) {
+        window.TOKEN = token;
+        sessionStorage.setItem('TOKEN', token);
+        if (remember) {
+          localStorage.setItem('TOKEN', token);
+        }
+
+        if (window.opener) {
+          window.opener.postMessage({ type: 'userInfo', data: { token, remember, ...user } }, '*');
+        }
+      }
+
+      return dispatch.user.setUser(user);
+    },
     logout() {
       logout();
       dispatch.user.setUser(null);

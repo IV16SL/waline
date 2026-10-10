@@ -7,6 +7,12 @@ import Header from '../../components/Header.jsx';
 // oxlint-disable-next-line import/no-namespace
 import * as Icons from '../../components/icon';
 import { useCaptcha } from '../../components/useCaptcha.js';
+import { startAuthentication } from '@simplewebauthn/browser';
+
+import {
+  getPasskeyAuthOptions,
+  verifyPasskeyLogin,
+} from '../../services/auth.js';
 import { get2FAToken } from '../../services/user.js';
 
 export default function Login() {
@@ -15,6 +21,7 @@ export default function Login() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
   const [error, setError] = useState(false);
   // oxlint-disable-next-line react/hook-use-state
   const [is2FAEnabled, enable2FA] = useState(false);
@@ -102,6 +109,39 @@ export default function Login() {
     }
   };
 
+  const onPasskeyLogin = async (event) => {
+    event.preventDefault();
+    setError(false);
+    setPasskeyLoading(true);
+
+    try {
+      const form = event.currentTarget.form;
+      const email = form?.email?.value;
+
+      if (!email) {
+        throw new Error(t('please input email'));
+      }
+
+      const { options, state } = await getPasskeyAuthOptions(email);
+      const credential = await startAuthentication({ optionsJSON: options });
+      const { token, ...user } = await verifyPasskeyLogin({ state, credential });
+
+      if (!token) {
+        throw new Error(t('passkey login failed'));
+      }
+
+      await dispatch.user.loginWithPasskey({
+        token,
+        user,
+        remember: form?.remember?.checked,
+      });
+    } catch (err) {
+      setError(err?.message || t('passkey login failed'));
+    } finally {
+      setPasskeyLoading(false);
+    }
+  };
+
   const check2FACode = async (event) => {
     const email = event.target.value;
 
@@ -186,6 +226,16 @@ export default function Login() {
             <p className="submit">
               <button type="submit" className="btn btn-l w-100 primary" disabled={loading}>
                 {t('login')}
+              </button>
+            </p>
+            <p className="submit">
+              <button
+                type="button"
+                className="btn btn-l w-100"
+                disabled={loading || passkeyLoading}
+                onClick={onPasskeyLogin}
+              >
+                {t('passkey login')}
               </button>
             </p>
             <p style={{ display: 'flex', justifyContent: 'space-between' }}>

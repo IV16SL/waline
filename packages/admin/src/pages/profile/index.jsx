@@ -9,6 +9,7 @@ import * as Icons from '../../components/icon';
 import { updateProfile } from '../../services/user.js';
 import { buildAvatar } from '../manage-comments/utils.js';
 import TwoFactorAuth from './twoFactorAuth.jsx';
+import PasskeyAuth from './passkeyAuth.jsx';
 
 const unbind = async (type) => {
   await updateProfile({ [type]: '' });
@@ -307,6 +308,8 @@ export default function Profile() {
               </section>
               <br />
               <TwoFactorAuth />
+              <br />
+              <PasskeyAuth />
               <br />
             </div>
           </div>
