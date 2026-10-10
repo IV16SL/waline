@@ -32,7 +32,8 @@ export default function PasskeyAuth() {
     try {
       const { options, state } = await getPasskeyRegisterOptions();
       const credential = await startRegistration({ optionsJSON: options });
-      await registerPasskey({ state, credential });
+      const name = prompt(t('name this passkey'), t('passkey'));
+      await registerPasskey({ state, credential, name: name?.trim() || undefined });
       await refresh();
     } catch (err) {
       alert(err?.message || err);

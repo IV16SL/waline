@@ -152,7 +152,7 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
     },
 
     async verifyPasskeyRegistration(
-      input: { state: string; credential: unknown },
+      input: { state: string; credential: unknown; name?: string },
       ctx: WalineContext,
     ) {
       const user = requireUser(ctx);
@@ -173,9 +173,10 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
         { field: ['passkey'] },
       );
       const list = parsePasskeys(account?.passkey).filter(({ id }) => id !== record.id);
+      const customName = typeof input.name === 'string' ? input.name.trim().slice(0, 50) : '';
       list.push({
         ...record,
-        name: 'Passkey ' + (list.length + 1),
+        name: customName || 'Passkey ' + (list.length + 1),
         createdAt: new Date().toISOString(),
       });
       await models.Users.update({ passkey: JSON.stringify(list) }, { objectId: user.objectId });

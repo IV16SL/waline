@@ -111,5 +111,6 @@
   "register passkey": "Register passkey",
   "no passkey registered": "No passkey registered yet",
   "confirm remove passkey": "Remove this passkey?",
-  "remove passkey": "Remove"
+  "remove passkey": "Remove",
+  "name this passkey": "Name this passkey"
 }
