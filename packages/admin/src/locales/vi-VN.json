@@ -112,5 +112,6 @@
   "no passkey registered": "Chưa có khóa truy cập nào được đăng ký",
   "confirm remove passkey": "Xóa khóa truy cập này?",
   "remove passkey": "Xóa",
-  "name this passkey": "Đặt tên cho khóa truy cập này"
+  "name this passkey": "Đặt tên cho khóa truy cập này",
+  "passkey description": "Khoá truy cập là một thông tin đăng nhập kỹ thuật số, được liên kết với một tài khoản người dùng và một trang web hoặc ứng dụng. Khoá truy cập cho phép người dùng xác thực mà không cần nhập tên người dùng hoặc mật khẩu, hoặc cung cấp bất kỳ yếu tố xác thực bổ sung nào. Công nghệ này nhằm mục đích thay thế các cơ chế xác thực cũ như mật khẩu."
 }

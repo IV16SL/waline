@@ -112,5 +112,6 @@
   "no passkey registered": "No passkey registered yet",
   "confirm remove passkey": "Remove this passkey?",
   "remove passkey": "Remove",
-  "name this passkey": "Name this passkey"
+  "name this passkey": "Name this passkey",
+  "passkey description": "A passkey is a digital credential, tied to a user account and a website or application. Passkeys allow users to authenticate without having to enter a username or password, or provide any additional authentication factor. This technology aims to replace legacy authentication mechanisms such as passwords."
 }

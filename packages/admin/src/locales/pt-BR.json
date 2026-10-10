@@ -112,5 +112,6 @@
   "no passkey registered": "Nenhuma chave de acesso registrada",
   "confirm remove passkey": "Remover esta chave de acesso?",
   "remove passkey": "Remover",
-  "name this passkey": "Dar um nome a esta chave de acesso"
+  "name this passkey": "Dar um nome a esta chave de acesso",
+  "passkey description": "Uma chave de acesso é uma credencial digital vinculada a uma conta de usuário e a um site ou aplicativo. Com as chaves de acesso, os usuários podem se autenticar sem precisar inserir um nome de usuário ou senha nem fornecer um fator de autenticação extra. Essa tecnologia tem como objetivo substituir mecanismos de autenticação legados, como senhas."
 }

@@ -112,5 +112,6 @@
   "no passkey registered": "Belum ada kunci sandi yang terdaftar",
   "confirm remove passkey": "Hapus kunci sandi ini?",
   "remove passkey": "Hapus",
-  "name this passkey": "Beri nama kunci sandi ini"
+  "name this passkey": "Beri nama kunci sandi ini",
+  "passkey description": "Kunci sandi adalah kredensial digital, yang terikat ke akun pengguna dan situs atau aplikasi. Kunci sandi memungkinkan pengguna melakukan autentikasi tanpa harus memasukkan nama pengguna atau sandi, atau memberikan faktor autentikasi tambahan. Teknologi ini bertujuan untuk menggantikan mekanisme autentikasi lama seperti sandi."
 }

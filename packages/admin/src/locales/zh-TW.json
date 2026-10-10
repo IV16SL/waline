@@ -112,5 +112,6 @@
   "no passkey registered": "尚未註冊通行密鑰",
   "confirm remove passkey": "確定要移除這個通行密鑰嗎？",
   "remove passkey": "移除",
-  "name this passkey": "為這個通行密鑰命名"
+  "name this passkey": "為這個通行密鑰命名",
+  "passkey description": "密碼金鑰是與使用者帳戶和網站/應用程式綁定的數位憑證。使用者只要有密碼金鑰，就不必輸入使用者名稱或密碼，也不必提供任何額外的驗證要素，即可完成驗證。這項技術旨在取代密碼等舊版驗證機制。"
 }

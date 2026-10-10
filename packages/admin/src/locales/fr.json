@@ -112,5 +112,6 @@
   "no passkey registered": "Aucune clé d'accès enregistrée",
   "confirm remove passkey": "Supprimer cette clé d'accès ?",
   "remove passkey": "Supprimer",
-  "name this passkey": "Nommer cette clé d'accès"
+  "name this passkey": "Nommer cette clé d'accès",
+  "passkey description": "Une clé d'accès est un identifiant numérique associé à un compte utilisateur et à un site Web ou une application. Les clés d'accès permettent aux utilisateurs de s'authentifier sans avoir à saisir de nom d'utilisateur ni de mot de passe, ni à fournir de facteur d'authentification supplémentaire. Cette technologie vise à remplacer les anciens mécanismes d'authentification tels que les mots de passe."
 }

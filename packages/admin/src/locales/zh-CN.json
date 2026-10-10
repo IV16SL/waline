@@ -112,5 +112,6 @@
   "no passkey registered": "尚未注册通行密钥",
   "confirm remove passkey": "确定删除这个通行密钥？",
   "remove passkey": "删除",
-  "name this passkey": "给这个通行密钥起个名字"
+  "name this passkey": "给这个通行密钥起个名字",
+  "passkey description": "通行密钥是一种数字凭据，与用户账号以及网站或应用相关联。借助通行密钥，用户无需输入用户名或密码，也无需提供任何额外的身份验证因素即可进行身份验证。这项技术旨在取代密码等旧版身份验证机制。"
 }

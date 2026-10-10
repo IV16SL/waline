@@ -57,6 +57,7 @@ export default function PasskeyAuth() {
   return (
     <section id="passkey-auth">
       <h3>{t('passkey')}</h3>
+      <p className="description">{t('passkey description')}</p>
       {keys.length > 0 ? (
         <ul>
           {keys.map((key) => (

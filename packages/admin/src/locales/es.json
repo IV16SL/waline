@@ -112,5 +112,6 @@
   "no passkey registered": "Aún no hay claves de acceso registradas",
   "confirm remove passkey": "¿Eliminar esta clave de acceso?",
   "remove passkey": "Eliminar",
-  "name this passkey": "Asignar un nombre a esta clave de acceso"
+  "name this passkey": "Asignar un nombre a esta clave de acceso",
+  "passkey description": "Una llave de acceso es una credencial digital vinculada a una cuenta de usuario y a un sitio web o una aplicación. Las llaves de acceso permiten que los usuarios se autentiquen sin tener que ingresar un nombre de usuario o una contraseña, ni proporcionar ningún factor de autenticación adicional. Esta tecnología tiene como objetivo reemplazar los mecanismos de autenticación heredados, como las contraseñas."
 }

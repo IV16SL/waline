@@ -112,5 +112,6 @@
   "no passkey registered": "Nessuna passkey registrata",
   "confirm remove passkey": "Rimuovere questa passkey?",
   "remove passkey": "Rimuovi",
-  "name this passkey": "Dai un nome a questa passkey"
+  "name this passkey": "Dai un nome a questa passkey",
+  "passkey description": "Una passkey è una credenziale digitale collegata a un account utente e a un sito web o un'applicazione. Le passkey consentono agli utenti di autenticarsi senza dover inserire un nome utente o una password o fornire un fattore di autenticazione aggiuntivo. Questa tecnologia mira a sostituire i meccanismi di autenticazione legacy come le password."
 }
