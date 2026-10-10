@@ -168,9 +168,10 @@ export interface WalineServices {
     }): Promise<PasskeyCredential>;
     getAuthenticationOptions(input: {
       allowCredentialIds: string[];
-      email: string;
+      email?: string;
     }): Promise<{ options: unknown; state: string }>;
-    peekAuthState(state: string): Promise<{ challenge: string; email: string }>;
+    peekAuthState(state: string): Promise<{ challenge: string; email?: string }>;
+    decodeUserHandle(userHandle: string): Promise<string>;
     verifyAuthentication(input: {
       credential: unknown;
       challenge: string;

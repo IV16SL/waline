@@ -177,26 +177,37 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
       return { ok: true };
     },
 
-    async getPasskeyAuthOptions(input: { email: string }, _ctx: WalineContext) {
-      const email = requiredString(input.email, 'email');
+    async getPasskeyAuthOptions(input: { email?: string }, _ctx: WalineContext) {
       const passkey = requiredCapability(services.passkey, 'passkey');
-      const [account] = await models.Users.select({ email }, { field: ['passkey'] });
-      const list = parsePasskeys(account?.passkey);
-      if (!account || list.length === 0) {
-        throw new WalineError('PASSKEY_NOT_REGISTERED', 400);
+      const email = typeof input.email === 'string' && input.email ? input.email : undefined;
+      if (email) {
+        const [account] = await models.Users.select({ email }, { field: ['passkey'] });
+        const list = parsePasskeys(account?.passkey);
+        if (!account || list.length === 0) {
+          throw new WalineError('PASSKEY_NOT_REGISTERED', 400);
+        }
+        try {
+          return await passkey.getAuthenticationOptions({
+            allowCredentialIds: list.map(({ id }) => id),
+            email,
+          });
+        } catch {
+          throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
+        }
       }
+      // usernameless: the browser shows an account picker instead
       try {
-        return await passkey.getAuthenticationOptions({
-          allowCredentialIds: list.map(({ id }) => id),
-          email,
-        });
+        return await passkey.getAuthenticationOptions({ allowCredentialIds: [] });
       } catch {
         throw new WalineError('PASSKEY_NOT_CONFIGURED', 500);
       }
     },
 
     async verifyPasskeyLogin(
-      input: { state: string; credential: { id: string } & Record<string, unknown> },
+      input: {
+        state: string;
+        credential: { id: string; response?: { userHandle?: string } } & Record<string, unknown>;
+      },
       _ctx: WalineContext,
     ) {
       const passkey = requiredCapability(services.passkey, 'passkey');
@@ -206,13 +217,28 @@ export const createAuthHandler = (runtime: CoreRuntime) => {
         throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
       }
       let challenge: string;
-      let email: string;
+      let email: string | undefined;
       try {
         ({ challenge, email } = await passkey.peekAuthState(requiredString(input.state, 'state')));
       } catch {
         throw new WalineError('PASSKEY_CHALLENGE_INVALID', 400);
       }
-      const [account] = await models.Users.select({ email });
+      let account;
+      if (email) {
+        [account] = await models.Users.select({ email });
+      } else {
+        // usernameless: the authenticator returns the userHandle we set at registration
+        const userHandle = credential.response?.userHandle;
+        if (typeof userHandle !== 'string' || !userHandle) {
+          throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
+        }
+        try {
+          const userId = await passkey.decodeUserHandle(userHandle);
+          [account] = await models.Users.select({ objectId: userId });
+        } catch {
+          throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
+        }
+      }
       if (!account || account.type.startsWith('verify:') || account.type === 'banned') {
         throw new WalineError('PASSKEY_VERIFY_FAILED', 400);
       }

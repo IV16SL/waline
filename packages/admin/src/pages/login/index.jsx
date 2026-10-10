@@ -116,11 +116,7 @@ export default function Login() {
 
     try {
       const form = event.currentTarget.form;
-      const email = form?.email?.value;
-
-      if (!email) {
-        throw new Error(t('please input email'));
-      }
+      const email = form?.email?.value || '';
 
       const { options, state } = await getPasskeyAuthOptions(email);
       const credential = await startAuthentication({ optionsJSON: options });

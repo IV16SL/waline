@@ -88,7 +88,7 @@ module.exports = function createPasskeyService({ jwtKey }) {
         userDisplayName: displayName || userName,
         attestationType: 'none',
         excludeCredentials: (excludeCredentialIds || []).map((id) => ({ id })),
-        authenticatorSelection: { residentKey: 'preferred', userVerification: 'preferred' },
+        authenticatorSelection: { residentKey: 'required', userVerification: 'preferred' },
       });
       return { options, state: seal({ action: 'register', userId, challenge: options.challenge }) };
     },
@@ -124,13 +124,21 @@ module.exports = function createPasskeyService({ jwtKey }) {
         allowCredentials: (allowCredentialIds || []).map((id) => ({ id })),
         userVerification: 'preferred',
       });
-      return { options, state: seal({ action: 'auth', email, challenge: options.challenge }) };
+      const sealed = { action: 'auth', challenge: options.challenge };
+      if (email) sealed.email = email;
+      return { options, state: seal(sealed) };
     },
 
     peekAuthState(state) {
       const { challenge, email } = unseal(state, 'auth');
-      if (!email) throw new Error('PASSKEY_BAD_CHALLENGE');
       return { challenge, email };
+    },
+
+    decodeUserHandle(userHandle) {
+      if (!userHandle || typeof userHandle !== 'string') {
+        throw new Error('PASSKEY_BAD_CHALLENGE');
+      }
+      return Buffer.from(userHandle, 'base64url').toString('utf8');
     },
 
     async verifyAuthentication({ credential, challenge, storedCredential }) {
